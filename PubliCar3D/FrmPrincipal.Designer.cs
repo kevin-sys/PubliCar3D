@@ -29,6 +29,7 @@ namespace PubliCar3D
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmPrincipal));
             this.label1 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -60,12 +61,14 @@ namespace PubliCar3D
             this.BtnListado = new System.Windows.Forms.PictureBox();
             this.CmbAfiliacion = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.ErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnGuardar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnEliminar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnModificar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnBuscar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnListado)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ErrorProvider)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -94,6 +97,7 @@ namespace PubliCar3D
             this.TxtNombre.Name = "TxtNombre";
             this.TxtNombre.Size = new System.Drawing.Size(173, 20);
             this.TxtNombre.TabIndex = 1;
+            this.TxtNombre.Validated += new System.EventHandler(this.TxtNombre_Validated);
             // 
             // TxtPrecio
             // 
@@ -254,6 +258,7 @@ namespace PubliCar3D
             this.BtnEliminar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.BtnEliminar.TabIndex = 20;
             this.BtnEliminar.TabStop = false;
+            this.BtnEliminar.Click += new System.EventHandler(this.BtnEliminar_Click);
             // 
             // BtnModificar
             // 
@@ -278,6 +283,7 @@ namespace PubliCar3D
             this.BtnBuscar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.BtnBuscar.TabIndex = 22;
             this.BtnBuscar.TabStop = false;
+            this.BtnBuscar.Click += new System.EventHandler(this.BtnBuscar_Click);
             // 
             // label10
             // 
@@ -363,6 +369,10 @@ namespace PubliCar3D
             this.label2.TabIndex = 30;
             this.label2.Text = "Afiliación";
             // 
+            // ErrorProvider
+            // 
+            this.ErrorProvider.ContainerControl = this;
+            // 
             // FrmPrincipal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -409,6 +419,7 @@ namespace PubliCar3D
             ((System.ComponentModel.ISupportInitialize)(this.BtnModificar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnBuscar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BtnListado)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ErrorProvider)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -446,6 +457,7 @@ namespace PubliCar3D
         private System.Windows.Forms.PictureBox BtnListado;
         private System.Windows.Forms.ComboBox CmbAfiliacion;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ErrorProvider ErrorProvider;
     }
 }
 

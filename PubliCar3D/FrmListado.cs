@@ -45,5 +45,13 @@ namespace PubliCar3D
         {
 
         }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            DgvListado.DataSource = null;
+            principals.Clear();
+            principals = service.Consultar();
+            DgvListado.DataSource = principals;
+        }
     }
 }

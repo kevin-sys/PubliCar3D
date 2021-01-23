@@ -65,6 +65,65 @@ namespace BLL
             return principals;
         }
 
+        public RespuestaBusqueda BuscarEmpresa(string cedula)
+        {
+            RespuestaBusqueda respuesta = new RespuestaBusqueda();
+            try
+            {
+                conexion.Open();
+                respuesta.pr = repository.Buscar(cedula);
+                conexion.Close();
+                respuesta.Mensaje = (respuesta.pr != null) ? "Hemos encontrado la empresa" : "La empresa buscada no existe";
+                respuesta.Error = false;
+                return respuesta;
+            }
+            catch (Exception e)
+            {
 
+                respuesta.Mensaje = $"Error de la Aplicacion: {e.Message}";
+                respuesta.Error = true;
+                return respuesta;
+            }
+            finally { conexion.Close(); }
+        }
+
+        public string EliminarEmpresa(string cedula)
+        {
+            try
+            {
+                conexion.Open();
+                var empresa = repository.Buscar(cedula);
+                if (empresa != null)
+                {
+                    repository.Eliminar(empresa);
+                    conexion.Close();
+                    return ($"El registro {empresa.Cedula} Ha sido eliminado correctamente");
+                }
+                else
+                {
+                    return ($"El registro {cedula} No se encuentra registrado");
+
+                }
+            }
+            catch (Exception e)
+            {
+
+                return $"Error de la Aplicación: {e.Message}";
+            }
+            finally { conexion.Close(); }
+        }
+    }
+    public class RespuestaBusqueda
+    {
+        public string Mensaje { get; set; }
+        public Principal pr { get; set; }
+        public bool Error { get; set; }
+    }
+
+    public class RespuestaConsulta
+    {
+        public string Mensaje { get; set; }
+        public IList<Principal> principals { get; set; }
+        public bool Error { get; set; }
     }
 }

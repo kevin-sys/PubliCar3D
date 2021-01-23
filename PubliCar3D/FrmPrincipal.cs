@@ -27,7 +27,7 @@ namespace PubliCar3D
             service = new PrincipalService(connectionString);
         }
 
-       private Principal MapearDatos()
+        private Principal MapearDatos()
         {
             principal = new Principal();
             principal.Nombre = TxtNombre.Text.Trim();
@@ -50,7 +50,7 @@ namespace PubliCar3D
             TxtTelefono.Text = "";
             TxtDireccion.Text = "";
             TxtProducto.Text = "";
-            CmbTipoProducto.Text ="";
+            CmbTipoProducto.Text = "";
             CmbAfiliacion.Text = "";
             TxtPrecio.Text = "";
         }
@@ -74,7 +74,78 @@ namespace PubliCar3D
         {
             FrmListado frmListado = new FrmListado();
             frmListado.ShowDialog();
-           
+
+        }
+
+        private void TxtNombre_Validated(object sender, EventArgs e)
+        {
+            //if (TxtNombre.Text.Trim() == "")
+            //{
+            //    ErrorProvider.SetError(TxtNombre, "Campo Obligatorio");
+            //    TxtNombre.Focus();
+            //}
+            //else
+            //{
+            //    ErrorProvider.Clear();
+            //}
+        }
+
+        private void BtnBuscar_Click(object sender, EventArgs e)
+        {
+            Buscar();
+        }
+        private void Buscar()
+        {
+            RespuestaBusqueda respuesta = new RespuestaBusqueda();
+            string cedula = TxtCedula.Text.Trim();
+            if (cedula!="")
+            {
+                respuesta = service.BuscarEmpresa(cedula);
+                if (respuesta.pr!=null)
+                {
+                    TxtCedula.Text = respuesta.pr.Cedula;
+                    TxtNombre.Text = respuesta.pr.Nombre;
+                    TxtTelefono.Text = respuesta.pr.Telefono;
+                    TxtDireccion.Text = respuesta.pr.Direccion;
+
+                    CmbTipoProducto.Text = respuesta.pr.TipoProducto;
+                    TxtProducto.Text = respuesta.pr.Producto;
+                    TxtPrecio.Text = respuesta.pr.Precio.ToString();
+                    CmbAfiliacion.Text = respuesta.pr.Afiliacion;
+                    MessageBox.Show(respuesta.Mensaje, "Busqueda", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show(respuesta.Mensaje, "Busqueda", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Por favor digite una cedula Valida", "Registros", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void EliminarEmpresa()
+        {
+            string cedula = TxtCedula.Text.Trim();
+            if (cedula!=null)
+            {
+                var respuesta = MessageBox.Show("¿Está seguro de eliminar el registro?", "Mensaje de Eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (respuesta == DialogResult.Yes)
+                {
+                    string mensaje = service.EliminarEmpresa(cedula);
+                    MessageBox.Show(mensaje, "Eliminar", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Por favor digite la cedula de la empresa a eliminar y presione el boton buscar", "Busqueda", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void BtnEliminar_Click(object sender, EventArgs e)
+        {
+            EliminarEmpresa();
         }
     }
 }

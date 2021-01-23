@@ -36,8 +36,20 @@ namespace DAL
                 command.ExecuteNonQuery();
             }
         }
+        public void Eliminar(Principal principal)
+        {
+            using (var command = _connection.CreateCommand())
+            {
+                command.CommandText = "DELETE FROM Empresa WHERE Cedula=@Cedula";
+                command.Parameters.AddWithValue("@Cedula", principal.Cedula);
+                command.ExecuteNonQuery();
+            }
+        }
+
+
         private Principal Mapear(SqlDataReader reader)
         {
+            if (!reader.HasRows) return null;
             Principal principal = new Principal();
             principal.Cedula = (string)reader["Cedula"];
             principal.Nombre = (string)reader["Nombre"];
@@ -55,6 +67,21 @@ namespace DAL
             principal.FechaRegistro = (DateTime)reader["FechaRegistro"];
             return principal;
         }
+
+        public Principal Buscar(string cedula)
+        {
+            SqlDataReader dataReader;
+            using (var command = _connection.CreateCommand())
+            {
+                command.CommandText = "select * from Empresa where Cedula=@Cedula";
+                command.Parameters.AddWithValue("@Cedula", cedula);
+                dataReader = command.ExecuteReader();
+                dataReader.Read();
+                return Mapear(dataReader);
+            }
+        }
+
+
         public List<Principal> Consultar()
         {
             using (var command = _connection.CreateCommand())
