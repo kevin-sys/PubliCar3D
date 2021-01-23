@@ -29,10 +29,11 @@ namespace PubliCar3D
             DgvListado.DataSource = principals;
         }
 
+
         private void BtnGuardar_Click(object sender, EventArgs e)
         {
             FrmPrincipal frmPrincipal = new FrmPrincipal();
-            frmPrincipal.Show();
+            frmPrincipal.ShowDialog();
         }
 
         private void DgvListado_CellContentClick(object sender, DataGridViewCellEventArgs e)

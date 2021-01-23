@@ -73,7 +73,8 @@ namespace PubliCar3D
         private void BtnListado_Click(object sender, EventArgs e)
         {
             FrmListado frmListado = new FrmListado();
-            frmListado.Show();
+            frmListado.ShowDialog();
+           
         }
     }
 }
