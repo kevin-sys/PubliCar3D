@@ -41,6 +41,7 @@ namespace PubliCar3D
             principal.Precio = Decimal.Parse(TxtPrecio.Text.Trim());
             principal.FechaRegistro = DtpFechaRegistro.Value;
             return principal;
+
         }
         private void Limpiar()
         {
