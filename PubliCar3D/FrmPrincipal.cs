@@ -147,5 +147,21 @@ namespace PubliCar3D
         {
             EliminarEmpresa();
         }
+
+        private void ModificarEmpresa()
+        {
+            var respuesta = MessageBox.Show("Está seguro de Modificar la información", "Mensaje de Eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (respuesta == DialogResult.Yes)
+            {
+                Principal principal = MapearDatos();
+                string mensaje = service.Modificar(principal);
+            }
+        }
+
+
+        private void BtnModificar_Click(object sender, EventArgs e)
+        {
+            ModificarEmpresa();
+        }
     }
 }

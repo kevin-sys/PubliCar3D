@@ -271,6 +271,7 @@ namespace PubliCar3D
             this.BtnModificar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.BtnModificar.TabIndex = 21;
             this.BtnModificar.TabStop = false;
+            this.BtnModificar.Click += new System.EventHandler(this.BtnModificar_Click);
             // 
             // BtnBuscar
             // 

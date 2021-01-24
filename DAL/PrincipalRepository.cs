@@ -58,12 +58,10 @@ namespace DAL
             principal.TipoProducto = (string)reader["TipoProducto"];
             principal.Producto = (string)reader["Producto"];
             principal.Precio = (decimal)reader["Precio"];
-
             principal.Afiliacion = (string)reader["Afiliacion"];
             principal.Porcentaje = (decimal)reader["Porcentaje"];
             principal.Descuento = (decimal)reader["Descuento"];
             principal.TotalPagar = (decimal)reader["TotalPagar"];
-
             principal.FechaRegistro = (DateTime)reader["FechaRegistro"];
             return principal;
         }
@@ -80,6 +78,29 @@ namespace DAL
                 return Mapear(dataReader);
             }
         }
+
+        public void Modificar(Principal principal)
+        {
+            using (var command = _connection.CreateCommand())
+            {
+                command.CommandText = "UPDATE Empresa SET Nombre=@Nombre, Telefono=@Telefono, Direccion=@Direccion, TipoProducto=@TipoProducto, Producto=@Producto, Precio=@Precio, Afiliacion=@Afiliacion, Porcentaje=@Porcentaje, Descuento=@Descuento, TotalPagar=@TotalPagar, FechaRegistro=@FechaRegistro WHERE Cedula=@Cedula";
+                command.Parameters.AddWithValue("@Cedula", principal.Cedula);
+                command.Parameters.AddWithValue("@Nombre", principal.Nombre);
+                command.Parameters.AddWithValue("@Telefono", principal.Telefono);
+                command.Parameters.AddWithValue("@Direccion", principal.Direccion);
+                command.Parameters.AddWithValue("@TipoProducto", principal.TipoProducto);
+                command.Parameters.AddWithValue("@Producto", principal.Producto);
+                command.Parameters.AddWithValue("@Precio", principal.Precio);
+                command.Parameters.AddWithValue("@Afiliacion", principal.Afiliacion);
+                command.Parameters.AddWithValue("@Porcentaje", principal.Porcentaje);
+                command.Parameters.AddWithValue("@Descuento", principal.Descuento);
+                command.Parameters.AddWithValue("@TotalPagar", principal.TotalPagar);
+                command.Parameters.AddWithValue("@FechaRegistro", principal.FechaRegistro);
+                command.ExecuteNonQuery();
+            }
+        }
+
+
 
 
         public List<Principal> Consultar()

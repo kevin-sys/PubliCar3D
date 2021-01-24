@@ -112,6 +112,33 @@ namespace BLL
             }
             finally { conexion.Close(); }
         }
+
+        public string Modificar(Principal nuevacedula)
+        {
+            try
+            {
+                conexion.Open();
+                var cedulavieja = repository.Buscar(nuevacedula.Cedula);
+                if (cedulavieja != null)
+                {
+                    repository.Modificar(nuevacedula);
+                    conexion.Close();
+                    return ($"El registro {nuevacedula.Cedula} se ha modificado satisfactoriamente.");
+                }
+                else
+                {
+                    return ($"Lo sentimos, {nuevacedula.Cedula} no se encuentra registrada.");
+                }
+            }
+            catch (Exception e)
+            {
+
+                return $"Error de la Aplicación: {e.Message}";
+            }
+            finally { conexion.Close(); }
+        }
+
+
     }
     public class RespuestaBusqueda
     {
