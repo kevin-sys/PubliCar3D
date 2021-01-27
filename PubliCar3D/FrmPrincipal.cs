@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ENTITY;
 using BLL;
-using System.Configuration;
 
 
 
@@ -18,13 +17,10 @@ namespace PubliCar3D
     public partial class FrmPrincipal : Form
     {
         Principal principal;
-        PrincipalService service;
-        List<Principal> principals = new List<Principal>();
         public FrmPrincipal()
         {
             InitializeComponent();
-            var connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-            service = new PrincipalService(connectionString);
+           
         }
 
         private Principal MapearDatos()
@@ -60,6 +56,7 @@ namespace PubliCar3D
         private void BtnGuardar_Click(object sender, EventArgs e)
         {
             Principal principal = MapearDatos();
+            PrincipalService service = new PrincipalService();
             string mensaje = service.Guardar(principal);
             MessageBox.Show(mensaje, "Mensaje de Guardado", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
             Limpiar();
@@ -96,27 +93,26 @@ namespace PubliCar3D
         }
         private void Buscar()
         {
-            RespuestaBusqueda respuesta = new RespuestaBusqueda();
+            PrincipalService service = new PrincipalService();
             string cedula = TxtCedula.Text.Trim();
             if (cedula!="")
             {
-                respuesta = service.BuscarEmpresa(cedula);
-                if (respuesta.pr!=null)
+                Principal principal = service.BuscarEmpresa(cedula);
+                if (cedula!=null)
                 {
-                    TxtCedula.Text = respuesta.pr.Cedula;
-                    TxtNombre.Text = respuesta.pr.Nombre;
-                    TxtTelefono.Text = respuesta.pr.Telefono;
-                    TxtDireccion.Text = respuesta.pr.Direccion;
+                    TxtCedula.Text = principal.Cedula;
+                    TxtNombre.Text = principal.Nombre;
+                    TxtTelefono.Text = principal.Telefono;
+                    TxtDireccion.Text = principal.Direccion;
 
-                    CmbTipoProducto.Text = respuesta.pr.TipoProducto;
-                    TxtProducto.Text = respuesta.pr.Producto;
-                    TxtPrecio.Text = respuesta.pr.Precio.ToString();
-                    CmbAfiliacion.Text = respuesta.pr.Afiliacion;
-                    MessageBox.Show(respuesta.Mensaje, "Busqueda", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    CmbTipoProducto.Text = principal.TipoProducto;
+                    TxtProducto.Text = principal.Producto;
+                    TxtPrecio.Text = principal.Precio.ToString();
+                    CmbAfiliacion.Text = principal.Afiliacion;
                 }
                 else
                 {
-                    MessageBox.Show(respuesta.Mensaje, "Busqueda", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"La empresa con cedula:  {cedula} NO SE ENCUENTRA EN NUESTRA BASE DE DATOS");
                 }
             }
             else
@@ -127,34 +123,39 @@ namespace PubliCar3D
 
         private void EliminarEmpresa()
         {
-            string cedula = TxtCedula.Text.Trim();
-            if (cedula!=null)
+            var respuesta = MessageBox.Show("Esta seguro de eliminar el registro, PARA SIEMPRE!", "Eliminar Registro", MessageBoxButtons.YesNo);
+            if (respuesta == DialogResult.Yes)
             {
-                var respuesta = MessageBox.Show("¿Está seguro de eliminar el registro?", "Mensaje de Eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (respuesta == DialogResult.Yes)
-                {
-                    string mensaje = service.EliminarEmpresa(cedula);
-                    MessageBox.Show(mensaje, "Eliminar", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Por favor digite la cedula de la empresa a eliminar y presione el boton buscar", "Busqueda", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                PrincipalService service = new PrincipalService();
+                string cedula = TxtCedula.Text;
+                string msjeliminado = service.EliminarEmpresa(cedula);
+                MessageBox.Show(msjeliminado);
             }
         }
 
         private void BtnEliminar_Click(object sender, EventArgs e)
         {
             EliminarEmpresa();
+            Limpiar();
         }
 
         private void ModificarEmpresa()
         {
-            var respuesta = MessageBox.Show("Está seguro de Modificar la información", "Mensaje de Eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-            if (respuesta == DialogResult.Yes)
+
+            if (TxtCedula.Text != "" && TxtDireccion.Text != "" && TxtNombre.Text != "" && TxtPrecio != null)
             {
-                Principal principal = MapearDatos();
-                string mensaje = service.Modificar(principal);
+                PrincipalService service = new PrincipalService();
+                Principal principal = new Principal();
+                principal.Cedula = TxtCedula.Text.Trim();
+                principal.Nombre = TxtNombre.Text;
+                principal.Direccion = TxtDireccion.Text;
+                principal.FechaRegistro = DtpFechaRegistro.Value.Date;
+                service.Modificar(principal);
+                MessageBox.Show("SE MODIFICO CORRECTAMENTE EL REGISTRO");
+            }
+            else
+            {
+                MessageBox.Show("ALGUNOS CAMPOS ESTAN VACIOS");
             }
         }
 

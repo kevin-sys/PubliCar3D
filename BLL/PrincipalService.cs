@@ -4,28 +4,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL;
+using System.Data.SqlClient;
 using ENTITY;
 
 namespace BLL
 {
     public class PrincipalService
     {
-        private readonly ConnectionManager conexion;
-        private readonly PrincipalRepository repository;
         List<Principal> principals;
-        public PrincipalService(string connectionString)
+        SqlConnection connection;
+        string CadenaConexion = @"Data Source=DESKTOP-2N4H2K5\SQLEXPRESS;Initial Catalog=Publicar3D;Integrated Security=True";
+
+        PrincipalRepository repository;
+        public PrincipalService()
         {
-            conexion = new ConnectionManager(connectionString);
-            repository = new PrincipalRepository(conexion);
+            connection = new SqlConnection(CadenaConexion);
+            repository = new PrincipalRepository(connection);
         }
         public string Guardar(Principal principal)
         {
             try
             {
                 CalcularDescuento(principal);
-                conexion.Open();
+                connection.Open();
                 repository.Guardar(principal);
-                conexion.Close();
                 return $"Se guardaron los datos satisfactoriamente";
             }
             catch (Exception e)
@@ -36,7 +38,7 @@ namespace BLL
 
             finally
             {
-                conexion.Close();
+                connection.Close();
             }
         }
 
@@ -58,99 +60,66 @@ namespace BLL
 
         public List<Principal> Consultar()
         {
-            conexion.Open();
+            connection.Open();
             principals = new List<Principal>();
             principals = repository.Consultar();
-            conexion.Close();
+            connection.Close();
             return principals;
         }
 
-        public RespuestaBusqueda BuscarEmpresa(string cedula)
+        public Principal BuscarEmpresa(string cedula)
         {
-            RespuestaBusqueda respuesta = new RespuestaBusqueda();
+            Principal principal = new Principal();
             try
             {
-                conexion.Open();
-                respuesta.pr = repository.Buscar(cedula);
-                conexion.Close();
-                respuesta.Mensaje = (respuesta.pr != null) ? "Hemos encontrado la empresa" : "La empresa buscada no existe";
-                respuesta.Error = false;
-                return respuesta;
+                connection.Open();
+                
+                return repository.Buscar(cedula);
             }
             catch (Exception e)
             {
-
-                respuesta.Mensaje = $"Error de la Aplicacion: {e.Message}";
-                respuesta.Error = true;
-                return respuesta;
+                string mensaje = " ERROR EN LA BASE DE DATOS " + e.Message;
+                return null;
             }
-            finally { conexion.Close(); }
+            finally { connection.Close(); }
         }
 
         public string EliminarEmpresa(string cedula)
         {
             try
             {
-                conexion.Open();
-                var empresa = repository.Buscar(cedula);
-                if (empresa != null)
-                {
-                    repository.Eliminar(empresa);
-                    conexion.Close();
-                    return ($"El registro {empresa.Cedula} Ha sido eliminado correctamente");
-                }
-                else
-                {
-                    return ($"El registro {cedula} No se encuentra registrado");
+                connection.Open();
+                repository.Eliminar(cedula);
+                return "SE ELIMINO CORRECTAMENTE";
 
-                }
             }
             catch (Exception e)
             {
 
                 return $"Error de la Aplicación: {e.Message}";
             }
-            finally { conexion.Close(); }
+            finally { connection.Close(); }
         }
 
-        public string Modificar(Principal nuevacedula)
+        public Principal Modificar(Principal nuevacedula)
         {
             try
             {
-                conexion.Open();
-                var cedulavieja = repository.Buscar(nuevacedula.Cedula);
-                if (cedulavieja != null)
-                {
-                    repository.Modificar(nuevacedula);
-                    conexion.Close();
-                    return ($"El registro {nuevacedula.Cedula} se ha modificado satisfactoriamente.");
-                }
-                else
-                {
-                    return ($"Lo sentimos, {nuevacedula.Cedula} no se encuentra registrada.");
-                }
+                connection.Open();
+                repository.Modificar(nuevacedula);
+                return nuevacedula;
+
             }
             catch (Exception e)
             {
 
-                return $"Error de la Aplicación: {e.Message}";
+                string mensaje = "ERROR!" + e.Message;
+                return null;
             }
-            finally { conexion.Close(); }
+            finally { connection.Close(); }
         }
 
 
     }
-    public class RespuestaBusqueda
-    {
-        public string Mensaje { get; set; }
-        public Principal pr { get; set; }
-        public bool Error { get; set; }
-    }
-
-    public class RespuestaConsulta
-    {
-        public string Mensaje { get; set; }
-        public IList<Principal> principals { get; set; }
-        public bool Error { get; set; }
-    }
+  
 }

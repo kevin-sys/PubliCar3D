@@ -10,15 +10,18 @@ namespace DAL
 {
     public class PrincipalRepository
     {
-        private readonly SqlConnection _connection;
-        private readonly List<Principal> principals = new List<Principal>();
-        public PrincipalRepository(ConnectionManager connection)
+        private SqlConnection connection;
+        List<Principal> principals;
+
+        public PrincipalRepository(SqlConnection connectionDb)
         {
-            _connection = connection._conexion;
+
+            connection = connectionDb;
+            principals = new List<Principal>();
         }
         public void Guardar(Principal principal)
         {
-            using (var command = _connection.CreateCommand())
+            using (var command = connection.CreateCommand())
             {
                 command.CommandText = "INSERT INTO Empresa (Cedula, Nombre, Telefono, Direccion, TipoProducto, Producto, Precio, Afiliacion, Porcentaje, Descuento, TotalPagar, FechaRegistro) VALUES (@Cedula, @Nombre, @Telefono, @Direccion, @TipoProducto, @Producto, @Precio, @Afiliacion, @Porcentaje, @Descuento, @TotalPagar, @FechaRegistro)";
                 command.Parameters.AddWithValue("@Cedula", principal.Cedula);
@@ -36,12 +39,12 @@ namespace DAL
                 command.ExecuteNonQuery();
             }
         }
-        public void Eliminar(Principal principal)
+        public void Eliminar(string principal)
         {
-            using (var command = _connection.CreateCommand())
+            using (var command = connection.CreateCommand())
             {
                 command.CommandText = "DELETE FROM Empresa WHERE Cedula=@Cedula";
-                command.Parameters.AddWithValue("@Cedula", principal.Cedula);
+                command.Parameters.AddWithValue("@Cedula", principal);
                 command.ExecuteNonQuery();
             }
         }
@@ -49,7 +52,6 @@ namespace DAL
 
         private Principal Mapear(SqlDataReader reader)
         {
-            if (!reader.HasRows) return null;
             Principal principal = new Principal();
             principal.Cedula = (string)reader["Cedula"];
             principal.Nombre = (string)reader["Nombre"];
@@ -68,20 +70,27 @@ namespace DAL
 
         public Principal Buscar(string cedula)
         {
-            SqlDataReader dataReader;
-            using (var command = _connection.CreateCommand())
+            using (var command = connection.CreateCommand())
             {
                 command.CommandText = "select * from Empresa where Cedula=@Cedula";
                 command.Parameters.AddWithValue("@Cedula", cedula);
-                dataReader = command.ExecuteReader();
-                dataReader.Read();
-                return Mapear(dataReader);
+               var dataReader = command.ExecuteReader();
+                if (dataReader.HasRows==true)
+                {
+                    while (dataReader.Read())
+                    {
+                        return Mapear(dataReader);
+
+                    }
+                }
             }
+            return null;
+
         }
 
         public void Modificar(Principal principal)
         {
-            using (var command = _connection.CreateCommand())
+            using (var command = connection.CreateCommand())
             {
                 command.CommandText = "UPDATE Empresa SET Nombre=@Nombre, Telefono=@Telefono, Direccion=@Direccion, TipoProducto=@TipoProducto, Producto=@Producto, Precio=@Precio, Afiliacion=@Afiliacion, Porcentaje=@Porcentaje, Descuento=@Descuento, TotalPagar=@TotalPagar, FechaRegistro=@FechaRegistro WHERE Cedula=@Cedula";
                 command.Parameters.AddWithValue("@Cedula", principal.Cedula);
@@ -105,7 +114,7 @@ namespace DAL
 
         public List<Principal> Consultar()
         {
-            using (var command = _connection.CreateCommand())
+            using (var command = connection.CreateCommand())
             {
                 command.CommandText = "SELECT * FROM Empresa";
                 var Reader = command.ExecuteReader();

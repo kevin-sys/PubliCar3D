@@ -16,17 +16,16 @@ namespace PubliCar3D
     public partial class FrmListado : Form
     {
 
-        PrincipalService service;
+        PrincipalService service = new PrincipalService();
         List<Principal> principals = new List<Principal>();
         public FrmListado()
         {
             InitializeComponent();
-            var connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-            service = new PrincipalService(connectionString);
             DgvListado.DataSource = null;
             principals.Clear();
             principals = service.Consultar();
             DgvListado.DataSource = principals;
+
         }
 
 
