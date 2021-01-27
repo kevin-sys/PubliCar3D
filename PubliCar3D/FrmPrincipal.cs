@@ -98,7 +98,7 @@ namespace PubliCar3D
             if (cedula!="")
             {
                 Principal principal = service.BuscarEmpresa(cedula);
-                if (cedula!=null)
+                if (principal != null)
                 {
                     TxtCedula.Text = principal.Cedula;
                     TxtNombre.Text = principal.Nombre;
@@ -113,6 +113,8 @@ namespace PubliCar3D
                 else
                 {
                     MessageBox.Show($"La empresa con cedula:  {cedula} NO SE ENCUENTRA EN NUESTRA BASE DE DATOS");
+                    Limpiar();
+
                 }
             }
             else
@@ -142,8 +144,7 @@ namespace PubliCar3D
         private void ModificarEmpresa()
         {
 
-            if (TxtCedula.Text != "" && TxtDireccion.Text != "" && TxtNombre.Text != "" && TxtPrecio != null)
-            {
+            
                 PrincipalService service = new PrincipalService();
                 Principal principal = new Principal();
                 principal.Cedula = TxtCedula.Text.Trim();
@@ -152,11 +153,7 @@ namespace PubliCar3D
                 principal.FechaRegistro = DtpFechaRegistro.Value.Date;
                 service.Modificar(principal);
                 MessageBox.Show("SE MODIFICO CORRECTAMENTE EL REGISTRO");
-            }
-            else
-            {
-                MessageBox.Show("ALGUNOS CAMPOS ESTAN VACIOS");
-            }
+           
         }
 
 

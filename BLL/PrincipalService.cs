@@ -13,7 +13,7 @@ namespace BLL
     {
         List<Principal> principals;
         SqlConnection connection;
-        string CadenaConexion = @"Data Source=DESKTOP-2N4H2K5\SQLEXPRESS;Initial Catalog=Publicar3D;Integrated Security=True";
+        string CadenaConexion = @"Data Source=ALEXANDER;Initial Catalog=Publicar3D;Integrated Security=True";
 
         PrincipalRepository repository;
         public PrincipalService()
